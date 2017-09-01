@@ -13,5 +13,8 @@ I plan to use following tools to aid my development:
 * Java 8 (perhaps upgrading to 9 after it is released, around the end of September 2017)
 * Spock (because I like the way it adds a bit more to testing)
 * Gradle (to learn something new)
+* Travic CI (to showcase that all my tests pass ;) )
+
+## Future
 
 * Kotlin (a really future plan to see how Kotlin comes into play and interaction with the other tools -- alternatively a different repository)
