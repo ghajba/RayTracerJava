@@ -18,3 +18,7 @@ I plan to use following tools to aid my development:
 ## Future
 
 * Kotlin (a really future plan to see how Kotlin comes into play and interaction with the other tools -- alternatively a different repository)
+
+## Decisions
+
+While developing I made decisions. I'll explain them in articles at my blog: https//hahamo.wordpress.com
