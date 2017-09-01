@@ -15,6 +15,8 @@ I plan to use following tools to aid my development:
 * Gradle (to learn something new)
 * Travic CI (to showcase that all my tests pass ;) )
 
+[![Build Status](https://travis-ci.org/ghajba/RayTracerJava.svg?branch=master)](https://travis-ci.org/ghajba/RayTracerJava)
+
 ## Future
 
 * Kotlin (a really future plan to see how Kotlin comes into play and interaction with the other tools -- alternatively a different repository)
