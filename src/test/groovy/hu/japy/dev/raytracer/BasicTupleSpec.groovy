@@ -2,7 +2,7 @@ package hu.japy.dev.raytracer
 
 import spock.lang.Specification
 
-class TupleSpec extends Specification {
+class BasicTupleSpec extends Specification {
 
     def "A tuple with w=1 is a point."() {
         when: "t is a tuple (4, -4, 3, 1)"

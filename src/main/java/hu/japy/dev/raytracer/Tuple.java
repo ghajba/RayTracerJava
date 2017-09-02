@@ -11,6 +11,14 @@ public class Tuple {
 
     final int w;
 
+    public static Tuple point(float x, float y, float z) {
+        return new Tuple(x, y, z, 1);
+    }
+
+    public static Tuple vector(float x, float y, float z) {
+        return new Tuple(x, y, z, 0);
+    }
+
     Tuple(float x, float y, float z, int w) {
         this.x = x;
         this.y = y;
@@ -25,6 +33,8 @@ public class Tuple {
     public boolean isVector() {
         return this.w == 0;
     }
+
+
 
     @Override public boolean equals(Object o) {
         if (this == o) {
