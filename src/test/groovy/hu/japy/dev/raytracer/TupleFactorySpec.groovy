@@ -2,7 +2,7 @@ package hu.japy.dev.raytracer
 
 import spock.lang.Specification
 
-class FactorySpec extends Specification {
+class TupleFactorySpec extends Specification {
 
     def "point(x,y,z) is a function that creates points"() {
         when: "p is point(4, -4, 3)"

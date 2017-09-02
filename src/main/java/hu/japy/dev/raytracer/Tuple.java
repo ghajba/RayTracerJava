@@ -5,21 +5,21 @@ package hu.japy.dev.raytracer;
  */
 public class Tuple {
 
-    public final float x;
-    public final float y;
-    public final float z;
+    public final double x;
+    public final double y;
+    public final double z;
 
     final int w;
 
-    public static Tuple point(float x, float y, float z) {
+    public static Tuple point(double x, double y, double z) {
         return new Tuple(x, y, z, 1);
     }
 
-    public static Tuple vector(float x, float y, float z) {
+    public static Tuple vector(double x, double y, double z) {
         return new Tuple(x, y, z, 0);
     }
 
-    Tuple(float x, float y, float z, int w) {
+    Tuple(double x, double y, double z, int w) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -46,6 +46,37 @@ public class Tuple {
         return new Tuple(-x, -y, -z, -w);
     }
 
+    public Tuple multiply(float multiplicator) {
+        return new Tuple(x * multiplicator, y * multiplicator, z * multiplicator, (int) (w * multiplicator));
+    }
+
+    public Tuple divide(float divisor) {
+        if (Float.compare(divisor, 0) == 0) {
+            return new Tuple(0, 0, 0, 0);
+        }
+        return new Tuple(x / divisor, y / divisor, z / divisor, (int) (w / divisor));
+    }
+
+    public double magnitude() {
+        return Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public Tuple normalize() {
+        return new Tuple(x / magnitude(), y / magnitude(), z / magnitude(), w);
+    }
+
+    public double dot(Tuple other) {
+        return x * other.x + y * other.y + z * other.z;
+    }
+
+    public Tuple cross(Tuple other) {
+        return Tuple.vector(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
+    }
+
+    @Override public String toString() {
+        return "(" + x + ", " + y + ", " + z + ", " + w + ")";
+    }
+
     @Override public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -56,22 +87,27 @@ public class Tuple {
 
         Tuple tuple = (Tuple) o;
 
-        if (Float.compare(tuple.x, x) != 0) {
+        if (Double.compare(tuple.x, x) != 0) {
             return false;
         }
-        if (Float.compare(tuple.y, y) != 0) {
+        if (Double.compare(tuple.y, y) != 0) {
             return false;
         }
-        if (Float.compare(tuple.z, z) != 0) {
+        if (Double.compare(tuple.z, z) != 0) {
             return false;
         }
         return w == tuple.w;
     }
 
     @Override public int hashCode() {
-        int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
-        result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
-        result = 31 * result + (z != +0.0f ? Float.floatToIntBits(z) : 0);
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(x);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(y);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(z);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + w;
         return result;
     }
