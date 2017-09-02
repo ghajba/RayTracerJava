@@ -34,7 +34,17 @@ public class Tuple {
         return this.w == 0;
     }
 
+    public Tuple add(Tuple other) {
+        return new Tuple(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w);
+    }
 
+    public Tuple sub(Tuple other) {
+        return new Tuple(this.x - other.x, this.y - other.y, this.z - other.z, this.w - other.w);
+    }
+
+    public Tuple negate() {
+        return new Tuple(-x, -y, -z, -w);
+    }
 
     @Override public boolean equals(Object o) {
         if (this == o) {
