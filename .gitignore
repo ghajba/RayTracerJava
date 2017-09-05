@@ -22,3 +22,6 @@ hs_err_pid*
 # Gradle
 .gradle
 build
+
+# project specific
+src/main/java/hu/japy/dev/raytracer/gists/
