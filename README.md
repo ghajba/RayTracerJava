@@ -23,4 +23,4 @@ I plan to use following tools to aid my development:
 
 ## Decisions
 
-While developing I made decisions. I'll explain them in articles at my blog: https://hahamo.wordpress.com
+While developing I made decisions. I'll explain them in articles at https://medium.com/ray-tracer-project
