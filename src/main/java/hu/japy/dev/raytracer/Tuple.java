@@ -1,5 +1,8 @@
 package hu.japy.dev.raytracer;
 
+import static hu.japy.dev.raytracer.Matrix.HEIGHT;
+import static hu.japy.dev.raytracer.Matrix.WIDTH;
+
 /**
  * A custom type of tuple required for the project.
  */
@@ -9,7 +12,7 @@ public class Tuple {
     public final double y;
     public final double z;
 
-    final int w;
+    final double w;
 
     public static Tuple point(double x, double y, double z) {
         return new Tuple(x, y, z, 1);
@@ -19,11 +22,21 @@ public class Tuple {
         return new Tuple(x, y, z, 0);
     }
 
-    Tuple(double x, double y, double z, int w) {
+    Tuple(double x, double y, double z, double w) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.w = w;
+    }
+
+    Tuple(double[] data) {
+        if (data.length != 4) {
+            throw new IllegalArgumentException("A Tuple has to contain 4 elements!");
+        }
+        this.x = data[0];
+        this.y = data[1];
+        this.z = data[2];
+        this.w = data[3];
     }
 
     public boolean isPoint() {
@@ -73,6 +86,16 @@ public class Tuple {
         return Tuple.vector(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
     }
 
+    public Tuple multiply(Matrix multiplicator) {
+        // TODO dimension check!
+        double[] tupleData = new double[WIDTH];
+        tupleData[0] = multiplicator.sumOfRow(0) * x;
+        tupleData[1] = multiplicator.sumOfRow(1) * y;
+        tupleData[2] = multiplicator.sumOfRow(2) * z;
+        tupleData[3] = multiplicator.sumOfRow(3) * w;
+        return new Tuple(tupleData);
+    }
+
     @Override public String toString() {
         return "(" + x + ", " + y + ", " + z + ", " + w + ")";
     }
@@ -108,7 +131,8 @@ public class Tuple {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(z);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + w;
+        temp = Double.doubleToLongBits(w);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }
 }

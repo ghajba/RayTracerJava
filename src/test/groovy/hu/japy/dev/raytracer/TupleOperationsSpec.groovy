@@ -100,4 +100,20 @@ class TupleOperationsSpec extends Specification {
         then: "cross(a,b) is vector(-1,2,-1)"
         a.cross(b) == Tuple.vector(-1, 2, -1)
     }
+
+    def "Multiplying a tuple with a matrix returns a tuple"() {
+        when: "t is a tuple (1,2,3,4)"
+        def t = new Tuple(1,2,3,4)
+        and: "m is a matrix with rows (1,2,3,4), (2,3,4,5), (3,4,5,6), (4,5,6,7)"
+        def m = new Matrix(1,2,3,4,2,3,4,5,3,4,5,6,4,5,6,7)
+        then: "t x m is a tuple (10, 28, 54, 88)"
+        t.multiply(m) == new Tuple(10, 28, 54, 88)
+    }
+
+    def "Multiplying a Tuple by the identity matrix gives the multiplicand."() {
+        when:"b is an arbitrary tuple"
+        def b = Tuple.point(1,2,3)
+        then: "b × identity = b"
+        b * Matrix.IDENTITY == b
+    }
 }
