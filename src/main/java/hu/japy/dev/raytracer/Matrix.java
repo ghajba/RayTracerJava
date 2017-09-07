@@ -32,13 +32,13 @@ public class Matrix {
     public Matrix multiply(Matrix other) {
         // TODO dimension check!
         double[] data = new double[WIDTH * HEIGHT];
-        for (int i = 0; i < HEIGHT; i++) {
-            for (int j = 0; j < WIDTH; j++) {
+        for (int row = 0; row < HEIGHT; row++) {
+            for (int col = 0; col < WIDTH; col++) {
                 int r = 0;
                 for (int c = 0; c < WIDTH; c++) {
-                    r += at(i, c) * other.at(c, j);
+                    r += at(row, c) * other.at(c, col);
                 }
-                data[position(i, j)] = r;
+                data[position(row, col)] = r;
             }
         }
         return new Matrix(data);
@@ -47,18 +47,33 @@ public class Matrix {
     public Tuple multiply(Tuple other) {
         // TODO dimension check!
         double[] tupleData = new double[WIDTH];
-        for (int i = 0; i < HEIGHT; i++) {
-            tupleData[i] = at(i, 0) * other.x + at(i, 1) * other.y + at(i, 2) * other.z + at(i, 3) * other.w;
+        for (int row = 0; row < HEIGHT; row++) {
+            tupleData[row] = at(row, 0) * other.x + at(row, 1) * other.y + at(row, 2) * other.z + at(row, 3) * other.w;
         }
         return new Tuple(tupleData);
     }
 
+    /**
+     * @param row the row num, we are interested in
+     * @return the sum of the numbers in the given row of the matrix
+     */
     public double sumOfRow(int row) {
         double result = 0;
-        for(int c = 0; c < WIDTH; c++) {
-            result += at(row, c);
+        for(int col = 0; col < WIDTH; col++) {
+            result += at(row, col);
         }
         return result;
+    }
+
+    public Matrix transpose() {
+        // first row -> first column
+        double[] newData = new double[WIDTH * HEIGHT];
+        for(int row = 0; row < HEIGHT; row++) {
+            for(int col = 0; col < WIDTH; col++) {
+                newData[HEIGHT*col + row] = at(row, col);
+            }
+        }
+        return new Matrix(newData);
     }
 
     @Override public boolean equals(Object o) {
