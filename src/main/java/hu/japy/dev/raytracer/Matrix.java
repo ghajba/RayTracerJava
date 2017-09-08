@@ -30,22 +30,20 @@ public class Matrix {
     }
 
     public Matrix multiply(Matrix other) {
-        // TODO dimension check!
         double[] data = new double[WIDTH * HEIGHT];
         for (int row = 0; row < HEIGHT; row++) {
             for (int col = 0; col < WIDTH; col++) {
-                int r = 0;
+                double r = 0;
                 for (int c = 0; c < WIDTH; c++) {
-                    r += at(row, c) * other.at(c, col);
+                    r = Double.sum(r, at(row, c) * other.at(c, col));
                 }
                 data[position(row, col)] = r;
             }
         }
-        return new Matrix(data);
+        return new Matrix(Arrays.stream(data).map(d -> (double) Math.round(d * 1000.0) / 1000.0).toArray());
     }
 
     public Tuple multiply(Tuple other) {
-        // TODO dimension check!
         double[] tupleData = new double[WIDTH];
         for (int row = 0; row < HEIGHT; row++) {
             tupleData[row] = at(row, 0) * other.x + at(row, 1) * other.y + at(row, 2) * other.z + at(row, 3) * other.w;
@@ -59,7 +57,7 @@ public class Matrix {
      */
     public double sumOfRow(int row) {
         double result = 0;
-        for(int col = 0; col < WIDTH; col++) {
+        for (int col = 0; col < WIDTH; col++) {
             result += at(row, col);
         }
         return result;
@@ -68,12 +66,157 @@ public class Matrix {
     public Matrix transpose() {
         // first row -> first column
         double[] newData = new double[WIDTH * HEIGHT];
-        for(int row = 0; row < HEIGHT; row++) {
-            for(int col = 0; col < WIDTH; col++) {
-                newData[HEIGHT*col + row] = at(row, col);
+        for (int row = 0; row < HEIGHT; row++) {
+            for (int col = 0; col < WIDTH; col++) {
+                newData[HEIGHT * col + row] = at(row, col);
             }
         }
         return new Matrix(newData);
+    }
+
+    double[] inverseData() {
+        double[] inverseData = new double[WIDTH * HEIGHT];
+
+        inverseData[position(0, 0)] = at(1, 1) * at(2, 2) * at(3, 3)//
+                + at(1, 2) * at(2, 3) * at(3, 1) //
+                + at(1, 3) * at(2, 1) * at(3, 2)//
+                - at(1, 1) * at(2, 3) * at(3, 2)//
+                - at(1, 2) * at(2, 1) * at(3, 3)//
+                - at(1, 3) * at(2, 2) * at(3, 1);
+        inverseData[position(0, 1)] = at(0, 1) * at(2, 3) * at(3, 2)//
+                + at(0, 2) * at(2, 1) * at(3, 3)//
+                + at(0, 3) * at(2, 2) * at(3, 1) //
+                - at(0, 1) * at(2, 2) * at(3, 3) //
+                - at(0, 2) * at(2, 3) * at(3, 1) //
+                - at(0, 3) * at(2, 1) * at(3, 2);
+        inverseData[position(0, 2)] = at(0, 1) * at(1, 2) * at(3, 3)//
+                + at(0, 2) * at(1, 3) * at(3, 1)//
+                + at(0, 3) * at(1, 1) * at(3, 2)//
+                - at(0, 1) * at(1, 3) * at(3, 2)//
+                - at(0, 2) * at(1, 1) * at(3, 3)//
+                - at(0, 3) * at(1, 2) * at(3, 1);
+        inverseData[position(0, 3)] = at(0, 1) * at(1, 3) * at(2, 2)//
+                + at(0, 2) * at(1, 1) * at(2, 3)//
+                + at(0, 3) * at(1, 2) * at(2, 1)//
+                - at(0, 1) * at(1, 2) * at(2, 3)//
+                - at(0, 2) * at(1, 3) * at(2, 1)//
+                - at(0, 3) * at(1, 1) * at(2, 2);
+        inverseData[position(1, 0)] = at(1, 0) * at(2, 3) * at(3, 2)//
+                + at(1, 2) * at(2, 0) * at(3, 3)//
+                + at(1, 3) * at(2, 2) * at(3, 0)//
+                - at(1, 0) * at(2, 2) * at(3, 3)//
+                - at(1, 2) * at(2, 3) * at(3, 0)//
+                - at(1, 3) * at(2, 0) * at(3, 2);
+        inverseData[position(1, 1)] = at(0, 0) * at(2, 2) * at(3, 3)//
+                + at(0, 2) * at(2, 3) * at(3, 0)//
+                + at(0, 3) * at(2, 0) * at(3, 2)//
+                - at(0, 0) * at(2, 3) * at(3, 2)//
+                - at(0, 2) * at(2, 0) * at(3, 3)//
+                - at(0, 3) * at(2, 2) * at(3, 0);
+        inverseData[position(1, 2)] = at(0, 0) * at(1, 3) * at(3, 2)//
+                + at(0, 2) * at(1, 0) * at(3, 3)//
+                + at(0, 3) * at(1, 2) * at(3, 0)//
+                - at(0, 0) * at(1, 2) * at(3, 3)//
+                - at(0, 2) * at(1, 3) * at(3, 0)//
+                - at(0, 3) * at(1, 0) * at(3, 2);
+        inverseData[position(1, 3)] = at(0, 0) * at(1, 2) * at(2, 3)//
+                + at(0, 2) * at(1, 3) * at(2, 0)//
+                + at(0, 3) * at(1, 0) * at(2, 2)//
+                - at(0, 0) * at(1, 3) * at(2, 2)//
+                - at(0, 2) * at(1, 0) * at(2, 3)//
+                - at(0, 3) * at(1, 2) * at(2, 0);
+        inverseData[position(2, 0)] = at(1, 0) * at(2, 1) * at(3, 3)//
+                + at(1, 1) * at(2, 3) * at(3, 0)//
+                + at(1, 3) * at(2, 0) * at(3, 1)//
+                - at(1, 0) * at(2, 3) * at(3, 1)//
+                - at(1, 1) * at(2, 0) * at(3, 3)//
+                - at(1, 3) * at(2, 1) * at(3, 0);
+        inverseData[position(2, 1)] = at(0, 0) * at(2, 3) * at(3, 1)//
+                + at(0, 1) * at(2, 0) * at(3, 3)//
+                + at(0, 3) * at(2, 1) * at(3, 0)//
+                - at(0, 0) * at(2, 1) * at(3, 3)//
+                - at(0, 1) * at(2, 3) * at(3, 0)//
+                - at(0, 3) * at(2, 0) * at(3, 1);
+        inverseData[position(2, 2)] = at(0, 0) * at(1, 1) * at(3, 3)//
+                + at(0, 1) * at(1, 3) * at(3, 0)//
+                + at(0, 3) * at(1, 0) * at(3, 1)//
+                - at(0, 0) * at(1, 3) * at(3, 1)//
+                - at(0, 1) * at(1, 0) * at(3, 3)//
+                - at(0, 3) * at(1, 1) * at(3, 0);
+        inverseData[position(2, 3)] = at(0, 0) * at(1, 3) * at(2, 1)//
+                + at(0, 1) * at(1, 0) * at(2, 3)//
+                + at(0, 3) * at(1, 1) * at(2, 0)//
+                - at(0, 0) * at(1, 1) * at(2, 3)//
+                - at(0, 1) * at(1, 3) * at(2, 0)//
+                - at(0, 3) * at(1, 0) * at(2, 1);
+        inverseData[position(3, 0)] = at(1, 0) * at(2, 2) * at(3, 1)//
+                + at(1, 1) * at(2, 0) * at(3, 2)//
+                + at(1, 2) * at(2, 1) * at(3, 0)//
+                - at(1, 0) * at(2, 1) * at(3, 2)//
+                - at(1, 1) * at(2, 2) * at(3, 0)//
+                - at(1, 2) * at(2, 0) * at(3, 1);
+        inverseData[position(3, 1)] = at(0, 0) * at(2, 1) * at(3, 2)//
+                + at(0, 1) * at(2, 2) * at(3, 0)//
+                + at(0, 2) * at(2, 0) * at(3, 1)//
+                - at(0, 0) * at(2, 2) * at(3, 1)//
+                - at(0, 1) * at(2, 0) * at(3, 2)//
+                - at(0, 2) * at(2, 1) * at(3, 0);
+        inverseData[position(3, 2)] = at(0, 0) * at(1, 2) * at(3, 1)//
+                + at(0, 1) * at(1, 0) * at(3, 2)//
+                + at(0, 2) * at(1, 1) * at(3, 0)//
+                - at(0, 0) * at(1, 1) * at(3, 2)//
+                - at(0, 1) * at(1, 2) * at(3, 0)//
+                - at(0, 2) * at(1, 0) * at(3, 1);
+        inverseData[position(3, 3)] = at(0, 0) * at(1, 1) * at(2, 2)//
+                + at(0, 1) * at(1, 2) * at(2, 0)//
+                + at(0, 2) * at(1, 0) * at(2, 1)//
+                - at(0, 0) * at(1, 2) * at(2, 1)//
+                - at(0, 1) * at(1, 0) * at(2, 2)//
+                - at(0, 2) * at(1, 1) * at(2, 0);
+        return inverseData;
+    }
+
+    public Matrix inverse() {
+        if (!invertible()) {
+            throw new IllegalStateException("This matrix is not invertible!");
+        }
+        double determinant = 1.0 / det();
+
+        return new Matrix(Arrays.stream(inverseData()).map(d -> d * determinant).toArray());
+    }
+
+    public boolean invertible() {
+        return det() != 0.0;
+    }
+
+    /**
+     * @return the determinant of the matrix
+     */
+    public double det() {
+        return at(0, 0) * at(1, 1) * at(2, 2) * at(3, 3)//
+                + at(0, 0) * at(1, 2) * at(2, 3) * at(3, 1)//
+                + at(0, 0) * at(1, 3) * at(2, 1) * at(3, 2)//
+                + at(0, 1) * at(1, 0) * at(2, 3) * at(3, 2)//
+                + at(0, 1) * at(1, 2) * at(2, 0) * at(3, 3)//
+                + at(0, 1) * at(1, 3) * at(2, 2) * at(3, 0)//
+                + at(0, 2) * at(1, 0) * at(2, 1) * at(3, 3)//
+                + at(0, 2) * at(1, 1) * at(2, 3) * at(3, 0)//
+                + at(0, 2) * at(1, 3) * at(2, 0) * at(3, 1)//
+                + at(0, 3) * at(1, 0) * at(2, 2) * at(3, 1)//
+                + at(0, 3) * at(1, 1) * at(2, 0) * at(3, 2)//
+                + at(0, 3) * at(1, 2) * at(2, 1) * at(3, 0)//
+                - at(0, 0) * at(1, 1) * at(2, 3) * at(3, 2)//
+                - at(0, 0) * at(1, 2) * at(2, 1) * at(3, 3)//
+                - at(0, 0) * at(1, 3) * at(2, 2) * at(3, 1)//
+                - at(0, 1) * at(1, 0) * at(2, 2) * at(3, 3)//
+                - at(0, 1) * at(1, 2) * at(2, 3) * at(3, 0)//
+                - at(0, 1) * at(1, 3) * at(2, 0) * at(3, 2)//
+                - at(0, 2) * at(1, 0) * at(2, 3) * at(3, 1)//
+                - at(0, 2) * at(1, 1) * at(2, 0) * at(3, 3)//
+                - at(0, 2) * at(1, 3) * at(2, 1) * at(3, 0)//
+                - at(0, 3) * at(1, 0) * at(2, 1) * at(3, 2)//
+                - at(0, 3) * at(1, 1) * at(2, 2) * at(3, 0)//
+                - at(0, 3) * at(1, 2) * at(2, 0) * at(3, 1);
     }
 
     @Override public boolean equals(Object o) {

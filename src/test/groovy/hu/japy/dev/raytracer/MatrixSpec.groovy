@@ -41,8 +41,8 @@ class MatrixSpec extends Specification {
         and: "b is a 4x4 matrix with rows (0, 1, 2, 4), (1, 2, 4, 8), (2, 4, 8, 16), (4, 8, 16, 32)"
         def b = new Matrix(0, 1, 2, 4, 1, 2, 4, 8, 2, 4, 8, 16, 4, 8, 16, 32)
         then: "a × b is another 4x4 matrix with rows (24, 49, 98, 196), (31, 64, 128, 256), (38, 79, 158, 316), (45, 94, 188, 376)"
-        def expexted = new Matrix(24, 49, 98, 196, 31, 64, 128, 256, 38, 79, 158, 316, 45, 94, 188, 376)
-        a.multiply(b) == expexted
+        def expected = new Matrix(24, 49, 98, 196, 31, 64, 128, 256, 38, 79, 158, 316, 45, 94, 188, 376)
+        a * b == expected
     }
 
     def "A matrix multiplied by a tuple produces a tuple."() {
@@ -63,6 +63,15 @@ class MatrixSpec extends Specification {
         a * Matrix.IDENTITY == a
     }
 
+    def "Multiplying matrices"() {
+        when: "a is a 4x4 matrix with rows (1,1,1,1), (1,1,1,1), (1,1,1,1), (1,1,1,1)"
+        def a = new Matrix(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+        and: "b is a 4x4 matrix with rows (1,1,1,1), (1,1,1,1), (1,1,1,1), (1,1,1,1)"
+        def b = new Matrix(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+        then: "axb is a 4x4 matrix with rows (4,4,4,4), (4,4,4,4), (4,4,4,4), (4,4,4,4)"
+        a * b == new Matrix(4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4)
+    }
+
     def "transpose(a) transposes its argument."() {
         when: "a is a 4x4 matrix with rows (1, 2, 3, 4), (5, 6, 7, 8), (8, 6, 7, 5), (4, 3, 2, 1)"
         def a = new Matrix(1, 2, 3, 4, 5, 6, 7, 8, 8, 7, 6, 5, 4, 3, 2, 1)
@@ -75,5 +84,79 @@ class MatrixSpec extends Specification {
         def i = Matrix.IDENTITY
         then: "transpose(identity) = identity"
         i.transpose() == Matrix.IDENTITY
+    }
+
+    def "Multiplying by the inverse produces original multiplicand."() {
+        given: "a is a 4x4 matrix with rows (1, 2, 3, 4), (5, 6, 7, 8), (9, 8, 7, 6), (5, 4, 3, 2)"
+        def a = new Matrix(1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2)
+        and: "b is another 4x4 matrix with rows (2, 5, 8, 4), (3, 4, 2, 1), (1, 7, 6, 9), (0, 0, 0, 1)"
+        def b = new Matrix(2, 5, 8, 4, 3, 4, 2, 1, 1, 7, 6, 9, 0, 0, 0, 1)
+        when: "c = a × b"
+        def c = a.multiply(b)
+        and: "bi is the inverse of b"
+        def bi = b.inverse()
+        then: "c × inverse(b) = a"
+        a * b == c
+        and:
+        a * b * bi == a
+    }
+
+    def "Multiplying a matrix by its inverse produces the identity matrix."() {
+        when: "a is a 4x4 matrix with rows (2, 5, 8, 4), (3, 4, 2, 1), (1, 7, 6, 9), (0, 0, 0, 1)"
+        def a = new Matrix(2, 5, 8, 4, 3, 4, 2, 1, 1, 7, 6, 9, 0, 0, 0, 1)
+        then: "a × inverse(a) = identity"
+        a * a.inverse() == Matrix.IDENTITY
+    }
+
+    def "The inverse of the identity matrix is the identity matrix"() {
+        when: "a = inverse(identity)"
+        def a = Matrix.IDENTITY.inverse()
+        then: "a = identity"
+        a == Matrix.IDENTITY
+    }
+
+    def "Identifying a non-invertible matrix."() {
+        when: "a is a 4x4 matrix with rows (2, 0, 0, 0), (0, 0, 0, 0), (0, 0, 6, 0), (0, 0, 0, 1)"
+        def a = new Matrix(2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1)
+        then: "a is not invertible"
+        !a.invertible()
+    }
+
+    def "Identifying an invertible matrix."() {
+        when: "a is a 4x4 matrix with rows (2, 0, 0, 0), (0, 1, 0, 0), (0, 0, 6, 0), (0, 0, 0, 1)"
+        def a = new Matrix(2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1)
+        then: "a is invertible"
+        a.invertible()
+    }
+
+    def "The determinant of the identity matrix is 1"() {
+        when: "a = identity"
+        def a = Matrix.IDENTITY
+        then: "det(a) = 1"
+        a.det() == 1
+    }
+
+    def "The determinant of a non-invertible matrix is 0."() {
+        when: "a is a 4x4 matrix with rows (2, 0, 0, 0), (0, 0, 0, 0), (0, 0, 6, 0), (0, 0, 0, 1)"
+        def a = new Matrix(2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1)
+        then: "det(a) = 0"
+        a.det() == 0
+    }
+
+    def "Finding the determinant of an invertible matrix."() {
+        when: "a is a 4x4 matrix with rows (4, 2, 1, 4), (8, 6, 7, 5), (9, 7, 8, 6), (0, 0, 0, 1)"
+        def a = new Matrix(4, 2, 1, 4, 8, 6, 7, 5, 9, 7, 8, 6, 0, 0, 0, 1)
+        then: "det(a) = -4"
+        a.det() == -4
+    }
+
+    def "Inverting a non-invertible matrix causes an error."() {
+        given: "a is a 4x4 matrix with rows (2, 0, 0, 0), (0, 0, 0, 0), (0, 0, 6, 0), (0, 0, 0, 1)"
+        def a = new Matrix(2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 1)
+        when: "inverse(a) is called"
+        a.inverse()
+        then: "inverse(a) causes an error"
+        IllegalStateException e = thrown()
+        e.getMessage() == "This matrix is not invertible!"
     }
 }
