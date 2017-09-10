@@ -52,7 +52,7 @@ class MatrixSpec extends Specification {
         def t = new Tuple(1, 2, 3, 1)
         then: "m × t is a tuple (18, 24, 33, 1)"
         def expected = new Tuple(18, 24, 33, 1)
-        def result = m.multiply(t)
+        def result = m * t
         result == expected
     }
 

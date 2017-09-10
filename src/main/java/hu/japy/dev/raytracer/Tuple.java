@@ -22,14 +22,7 @@ public class Tuple {
         return new Tuple(x, y, z, 0);
     }
 
-    Tuple(double x, double y, double z, double w) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
-    }
-
-    Tuple(double[] data) {
+    Tuple(double... data) {
         if (data.length != 4) {
             throw new IllegalArgumentException("A Tuple has to contain 4 elements!");
         }
