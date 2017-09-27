@@ -34,4 +34,40 @@ class MatrixTransformations extends Specification {
         then: "t × v = v"
         t * v == v
     }
+
+    def "A scaling matrix moves points proportionally."() {
+        when: "s is scaling(2,3,4)"
+        def s = new Scaling(2, 3, 4)
+        and: "p is point(-4,6,8)"
+        def p = Tuple.point(-4, 6, 8)
+        then: "s × p = point(-8,18,32)"
+        s * p == Tuple.point(-8, 18, 32)
+    }
+
+    def "A scaling matrix grows a vector proportionally."() {
+        when: "s is scaling(2,3,4)"
+        def s = new Scaling(2, 3, 4)
+        and: "v is vector(-4,6,8)"
+        def v = Tuple.vector(-4, 6, 8)
+        then: "s × v = vector(-8,18,32)"
+        s * v == Tuple.vector(-8, 18, 32)
+    }
+
+    def "The inverse of scaling shrinks a tuple."() {
+        when: "s is inverse(scaling(2,3,4))"
+        def s = new Scaling(2, 3, 4).inverse()
+        and: "v is vector(-4,6,8)"
+        def v = Tuple.vector(-4, 6, 8)
+        then: "s × v = vector(-2,2,2)"
+        s * v == Tuple.vector(-2, 2, 2)
+    }
+
+    def "Scaling by a negative value produces a reflection transformation."() {
+        when: "s is scaling(-1,1,1)"
+        def s = new Scaling(-1, 1, 1)
+        and: "p is point(2,3,4)"
+        def p = Tuple.point(2, 3, 4)
+        then: "s × p = point(-2,3,4)"
+        s * p == Tuple.point(-2, 3, 4)
+    }
 }
