@@ -8,6 +8,8 @@ import static hu.japy.dev.raytracer.Matrix.WIDTH;
  */
 public class Tuple {
 
+    public static double EPSILON = 0.0001;
+
     public final double x;
     public final double y;
     public final double z;
@@ -23,10 +25,7 @@ public class Tuple {
     }
 
     Tuple(double x, double y, double z, double w) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
+        this(new double[]{x, y, z, w});
     }
 
     Tuple(double[] data) {
@@ -96,11 +95,13 @@ public class Tuple {
         return new Tuple(tupleData);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "(" + x + ", " + y + ", " + z + ", " + w + ")";
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -110,19 +111,20 @@ public class Tuple {
 
         Tuple tuple = (Tuple) o;
 
-        if (Double.compare(tuple.x, x) != 0) {
+        if (Math.abs(tuple.x - x) > EPSILON) {
             return false;
         }
-        if (Double.compare(tuple.y, y) != 0) {
+        if (Math.abs(tuple.y - y) > EPSILON) {
             return false;
         }
-        if (Double.compare(tuple.z, z) != 0) {
+        if (Math.abs(tuple.z - z) > EPSILON) {
             return false;
         }
         return w == tuple.w;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result;
         long temp;
         temp = Double.doubleToLongBits(x);
