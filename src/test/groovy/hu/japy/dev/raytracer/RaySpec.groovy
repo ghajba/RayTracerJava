@@ -3,6 +3,7 @@ package hu.japy.dev.raytracer
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import static hu.japy.dev.raytracer.Intersection.intersection
 import static hu.japy.dev.raytracer.Ray.ray
 import static hu.japy.dev.raytracer.Sphere.sphere
 import static hu.japy.dev.raytracer.Tuple.point
@@ -42,15 +43,15 @@ class RaySpec extends Specification {
         def r = ray(point(0, 0, -5), vector(0, 0, 1))
         and: "s is sphere()"
         def s = sphere()
-        and: "t is intersect(r, s)"
-        def t = r.intersect(s)
+        and: "i is intersect(r, s)"
+        def i = r.intersect(s)
 
-        then: "size(t) = 2"
-        t.size() == 2
-        and: "t1 = 4"
-        t[0] == 4
-        and: "t2 = 6"
-        t[1] == 6
+        then: "size(i) = 2"
+        i.size() == 2
+        and: "i1 = intersection(4, s, false)"
+        i[0] == intersection(4, s, false)
+        and: "i2 = intersection(6, s, true)"
+        i[1] == intersection(6, s, true)
     }
 
     def "A ray intersects a sphere at one point."() {
@@ -58,13 +59,13 @@ class RaySpec extends Specification {
         def r = ray(point(0, 1, -5), vector(0, 0, 1))
         and: "s is sphere()"
         def s = sphere()
-        and: "t is intersect(r, s)"
-        def t = r.intersect(s)
+        and: "i is intersect(r, s)"
+        def i = r.intersect(s)
 
-        then: "size(t) = 1"
-        t.size() == 1
-        and: "t1 == 5"
-        t[0] == 5
+        then: "size(i) = 1"
+        i.size() == 1
+        and: "i1 = intersection(5, s, false)"
+        i[0] == intersection(5, s, false)
     }
 
     def "A ray misses a sphere."() {
@@ -72,11 +73,11 @@ class RaySpec extends Specification {
         def r = ray(point(0, 2, -5), vector(0, 0, 1))
         and: "s is sphere()"
         def s = sphere()
-        and: "t is intersect(r, s)"
-        def t = r.intersect(s)
+        and: "i is intersect(r, s)"
+        def i = r.intersect(s)
 
-        then: "t is empty"
-        t.isEmpty()
+        then: "i is empty"
+        i.isEmpty()
     }
 
     def "A ray is inside a sphere."() {
@@ -84,15 +85,15 @@ class RaySpec extends Specification {
         def r = ray(point(0, 0, 0), vector(0, 0, 1))
         and: "s is sphere()"
         def s = sphere()
-        and: "t is intersect(r, s)"
-        def t = r.intersect(s)
+        and: "i is intersect(r, s)"
+        def i = r.intersect(s)
 
-        then: "size(t) = 2"
-        t.size() == 2
-        and: "t1 = -1"
-        t[0] == -1
-        and: "t2 = 1"
-        t[1] == 1
+        then: "size(i) = 2"
+        i.size() == 2
+        and: "i1 = intersection(-1,s,false)"
+        i[0] == intersection(-1, s, false)
+        and: "i2 = intersection(1,s,true)"
+        i[1] == intersection(1, s, true)
     }
 
     def "A sphere is behind a ray."() {
@@ -100,14 +101,14 @@ class RaySpec extends Specification {
         def r = ray(point(0, 0, 5), vector(0, 0, 1))
         and: "s is sphere()"
         def s = sphere()
-        and: "t is intersect(r, s)"
-        def t = r.intersect(s)
+        and: "i is intersect(r, s)"
+        def i = r.intersect(s)
 
-        then: "size(t) = 2"
-        t.size() == 2
-        and: "t1 = -6"
-        t[0] == -6
-        and: "t2 = -4"
-        t[1] == -4
+        then: "size(i) = 2"
+        i.size() == 2
+        and: "i1 = intersection(-6, s, false)"
+        i[0] == intersection(-6, s, false)
+        and: "i2 = intersection(-4, s, true)"
+        i[1] == intersection(-4, s, true)
     }
 }

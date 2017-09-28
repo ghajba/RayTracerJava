@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static hu.japy.dev.raytracer.Intersection.intersection;
+
 public class Ray {
     public final Tuple origin;
     public final Tuple direction;
@@ -23,7 +25,7 @@ public class Ray {
         return origin.add(direction.multiply(t));
     }
 
-    public List<Double> intersect(Sphere sphere) {
+    public List<Intersection> intersect(Sphere sphere) {
         Tuple sphereToRay = origin.sub(sphere.origin);
         double a = direction.dot(direction);
         double b = 2 * direction.dot(sphereToRay);
@@ -33,17 +35,23 @@ public class Ray {
 
         if (Double.compare(discriminant, 0) < 0) return new ArrayList<>();
 
-        ArrayList<Double> intersections = new ArrayList<>();
+        ArrayList<Intersection> intersections = new ArrayList<>();
 
         if (Double.compare(discriminant, 0) == 0) {
-            intersections.add(-b / (2 * a));
-        }
-        else {
-            intersections.add((-b - Math.sqrt(discriminant))/(2*a));
-            intersections.add((-b + Math.sqrt(discriminant))/(2*a));
+            intersections.add(intersection(-b / (2 * a), sphere, false));
+        } else {
+            double t1 = (-b - Math.sqrt(discriminant)) / (2 * a);
+            double t2 = (-b + Math.sqrt(discriminant)) / (2 * a);
 
+            if(t1 < t2) {
+                intersections.add(intersection(t1, sphere, false));
+                intersections.add(intersection(t2, sphere, true));
+            }
+            else {
+                intersections.add(intersection(t2, sphere, false));
+                intersections.add(intersection(t1, sphere, true));
+            }
         }
-        intersections.sort(Comparator.naturalOrder());
         return intersections;
     }
 
