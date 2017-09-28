@@ -1,6 +1,5 @@
 package hu.japy.dev.raytracer;
 
-import static hu.japy.dev.raytracer.Matrix.HEIGHT;
 import static hu.japy.dev.raytracer.Matrix.WIDTH;
 
 /**
