@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import java.util.List;
+
 public class Intersection {
     public final double t;
     public final Sphere object;
@@ -12,6 +14,10 @@ public class Intersection {
 
     public static Intersection intersection(double t, Sphere s, boolean inside) {
         return new Intersection(t, s, inside);
+    }
+
+    public static Intersection hit(List<Intersection> intersections) {
+        return intersections.stream().filter(i -> i.t >= 0).findFirst().orElse(null);
     }
 
     private Intersection(double t, Sphere object, boolean inside) {
