@@ -26,9 +26,11 @@ public class Ray {
     }
 
     public List<Intersection> intersect(Sphere sphere) {
-        Tuple sphereToRay = origin.sub(sphere.origin);
-        double a = direction.dot(direction);
-        double b = 2 * direction.dot(sphereToRay);
+        Ray ray = transform(sphere.getTransform().inverse());
+
+        Tuple sphereToRay = ray.origin.sub(sphere.origin);
+        double a = ray.direction.dot(ray.direction);
+        double b = 2 * ray.direction.dot(sphereToRay);
         double c = sphereToRay.dot(sphereToRay) - 1;
 
         double discriminant = b * b - 4 * a * c;
@@ -53,6 +55,10 @@ public class Ray {
             }
         }
         return intersections;
+    }
+
+    public Ray transform(Matrix transformationMatrix) {
+        return new Ray(transformationMatrix.multiply(origin), transformationMatrix.multiply(direction));
     }
 
     @Override

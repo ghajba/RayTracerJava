@@ -9,6 +9,8 @@ public class Sphere {
     public final Tuple origin;
     public final double radius;
 
+    private Matrix transform = Matrix.IDENTITY;
+
     public static Sphere sphere() {
         return sphere(point(0, 0, 0), 1);
     }
@@ -20,6 +22,14 @@ public class Sphere {
     private Sphere(Tuple origin, double radius) {
         this.origin = origin;
         this.radius = radius;
+    }
+
+    public Matrix getTransform() {
+        return transform;
+    }
+
+    public void setTransform(Matrix transformationMatrix) {
+        this.transform = transformationMatrix;
     }
 
     @Override
