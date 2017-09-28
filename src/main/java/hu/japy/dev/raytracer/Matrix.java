@@ -12,9 +12,13 @@ public class Matrix {
 
     public static final Matrix IDENTITY = new Matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
+    public static Matrix matrix(double... data) {
+        return new Matrix(data);
+    }
+
     final double[] data;
 
-    public Matrix(double... data) {
+    private Matrix(double... data) {
         if (data.length != WIDTH * HEIGHT) {
             throw new IllegalArgumentException("You have to provide a 4x4 matrix");
         }
