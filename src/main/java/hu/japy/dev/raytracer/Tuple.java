@@ -57,12 +57,12 @@ public class Tuple {
         return new Tuple(-x, -y, -z, -w);
     }
 
-    public Tuple multiply(float multiplicator) {
+    public Tuple multiply(double multiplicator) {
         return new Tuple(x * multiplicator, y * multiplicator, z * multiplicator, (int) (w * multiplicator));
     }
 
-    public Tuple divide(float divisor) {
-        if (Float.compare(divisor, 0) == 0) {
+    public Tuple divide(double divisor) {
+        if (Double.compare(divisor, 0) == 0) {
             return new Tuple(0, 0, 0, 0);
         }
         return new Tuple(x / divisor, y / divisor, z / divisor, (int) (w / divisor));
