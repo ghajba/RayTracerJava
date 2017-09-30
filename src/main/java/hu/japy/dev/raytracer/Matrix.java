@@ -2,6 +2,8 @@ package hu.japy.dev.raytracer;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
 
 public class Matrix {
 
@@ -10,9 +12,13 @@ public class Matrix {
 
     public static final Matrix IDENTITY = new Matrix(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
 
+    public static Matrix matrix(double... data) {
+        return new Matrix(data);
+    }
+
     final double[] data;
 
-    public Matrix(double... data) {
+    private Matrix(double... data) {
         if (data.length != WIDTH * HEIGHT) {
             throw new IllegalArgumentException("You have to provide a 4x4 matrix");
         }
@@ -40,7 +46,7 @@ public class Matrix {
                 data[position(row, col)] = r;
             }
         }
-        return new Matrix(Arrays.stream(data).map(d -> (double) Math.round(d * 1000.0) / 1000.0).toArray());
+        return new Matrix(data);
     }
 
     public Tuple multiply(Tuple other) {
@@ -219,7 +225,8 @@ public class Matrix {
                 - at(0, 3) * at(1, 2) * at(2, 0) * at(3, 1);
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -229,14 +236,34 @@ public class Matrix {
 
         Matrix matrix = (Matrix) o;
 
-        return Arrays.equals(data, matrix.data);
+
+        return equals(data, matrix.data);
     }
 
-    @Override public int hashCode() {
+    private static boolean equals(double[] a, double[] a2) {
+        if (a == a2)
+            return true;
+        if (a == null || a2 == null)
+            return false;
+
+        int length = a.length;
+        if (a2.length != length)
+            return false;
+
+        for (int i = 0; i < length; i++)
+            if (Math.abs(a[i] - a2[i]) > Tuple.EPSILON)
+                return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
         return Arrays.hashCode(data);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < HEIGHT; i++) {
             sb.append("[");

@@ -1,12 +1,13 @@
 package hu.japy.dev.raytracer;
 
-import static hu.japy.dev.raytracer.Matrix.HEIGHT;
 import static hu.japy.dev.raytracer.Matrix.WIDTH;
 
 /**
  * A custom type of tuple required for the project.
  */
 public class Tuple {
+
+    public static double EPSILON = 0.0001;
 
     public final double x;
     public final double y;
@@ -22,7 +23,11 @@ public class Tuple {
         return new Tuple(x, y, z, 0);
     }
 
-    Tuple(double... data) {
+    Tuple(double x, double y, double z, double w) {
+        this(new double[]{x, y, z, w});
+    }
+
+    Tuple(double[] data) {
         if (data.length != 4) {
             throw new IllegalArgumentException("A Tuple has to contain 4 elements!");
         }
@@ -52,12 +57,12 @@ public class Tuple {
         return new Tuple(-x, -y, -z, -w);
     }
 
-    public Tuple multiply(float multiplicator) {
+    public Tuple multiply(double multiplicator) {
         return new Tuple(x * multiplicator, y * multiplicator, z * multiplicator, (int) (w * multiplicator));
     }
 
-    public Tuple divide(float divisor) {
-        if (Float.compare(divisor, 0) == 0) {
+    public Tuple divide(double divisor) {
+        if (Double.compare(divisor, 0) == 0) {
             return new Tuple(0, 0, 0, 0);
         }
         return new Tuple(x / divisor, y / divisor, z / divisor, (int) (w / divisor));
@@ -80,6 +85,7 @@ public class Tuple {
     }
 
     public Tuple multiply(Matrix multiplicator) {
+        // TODO dimension check!
         double[] tupleData = new double[WIDTH];
         tupleData[0] = multiplicator.sumOfRow(0) * x;
         tupleData[1] = multiplicator.sumOfRow(1) * y;
@@ -88,11 +94,13 @@ public class Tuple {
         return new Tuple(tupleData);
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return "(" + x + ", " + y + ", " + z + ", " + w + ")";
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -102,19 +110,20 @@ public class Tuple {
 
         Tuple tuple = (Tuple) o;
 
-        if (Double.compare(tuple.x, x) != 0) {
+        if (Math.abs(tuple.x - x) > EPSILON) {
             return false;
         }
-        if (Double.compare(tuple.y, y) != 0) {
+        if (Math.abs(tuple.y - y) > EPSILON) {
             return false;
         }
-        if (Double.compare(tuple.z, z) != 0) {
+        if (Math.abs(tuple.z - z) > EPSILON) {
             return false;
         }
         return w == tuple.w;
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int result;
         long temp;
         temp = Double.doubleToLongBits(x);
