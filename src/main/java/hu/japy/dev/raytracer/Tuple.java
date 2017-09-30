@@ -80,7 +80,6 @@ public class Tuple {
     }
 
     public Tuple multiply(Matrix multiplicator) {
-        // TODO dimension check!
         double[] tupleData = new double[WIDTH];
         tupleData[0] = multiplicator.sumOfRow(0) * x;
         tupleData[1] = multiplicator.sumOfRow(1) * y;
